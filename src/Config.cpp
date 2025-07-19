@@ -47,41 +47,42 @@ int Config::read(int ac, char **av) {
    return 0;
 }
 
+// Your updated Config::parseUrl function
 bool Config::parseUrl(const string& join_url) {
-    auto url = ada::parse<ada::url>(join_url);
-
-    if (!url) {
+    auto url = UrlParser::parse(join_url);
+    
+    if (!url.valid) {
         cerr << "unable to parse join URL" << endl;
         return false;
     }
-
+    
     string token, lastRoute;
-    istringstream ss(static_cast<string>(url->get_pathname()));
-
+    istringstream ss(url.path);
+    
     while (getline(ss, token, '/')) {
-        if(token.empty()) continue;
-
+        if (token.empty()) continue;
+        
         m_isMeetingStart = token == "s";
-
+        
         if (lastRoute == "j" || lastRoute == "s") {
             m_meetingId = token;
             break;
         }
-
+        
         lastRoute = token;
     }
-
-    if (m_meetingId.empty()) return false;
-
-    ada::url_search_params search(url->get_search());
-    if (!search.has("pwd")) 
+    
+    if (m_meetingId.empty()) 
         return false;
-
-    m_password = move(*search.get(string_view("pwd")));
-
+    
+    auto pwdIt = url.queryParams.find("pwd");
+    if (pwdIt == url.queryParams.end()) 
+        return false;
+    
+    m_password = pwdIt->second;
+    
     return true;
 }
-
 const string& Config::clientId() const {
     return m_clientId;
 }

@@ -51,6 +51,7 @@ build() {
 }
 
 run() {
+    export QT_LOGGING_RULES="*.debug=false;*.warning=false"
     exec ./"$BUILD"/zoomsdk
 }
 

@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.20.2)
-project(meeting_sdk_linux_sample VERSION 1.0.1)
+cmake_minimum_required(VERSION 3.22.1)
+project(meeting_sdk_linux_sample VERSION 1.0.2)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
 
 set(CMAKE_BUILD_TYPE Debug)
@@ -10,8 +11,9 @@ set(CMAKE_SYSTEM_PROCESSOR x86_64)
 
 set(ZOOM_SDK lib/zoomsdk)
 
-find_package(ada REQUIRED)
 find_package(CLI11 REQUIRED)
+
+find_path(PICOJSON_INCLUDE_DIRS "picojson/picojson.h")
 find_path(JWT_CPP_INCLUDE_DIRS "jwt-cpp/base.h")
 
 find_package(X11 REQUIRED)
@@ -23,6 +25,8 @@ pkg_check_modules(deps REQUIRED IMPORTED_TARGET glib-2.0)
 
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
+find_package(OpenSSL REQUIRED)
 
 include_directories(${ZOOM_SDK}/h)
 link_directories(${ZOOM_SDK} ${ZOOM_SDK})
@@ -53,9 +57,8 @@ add_executable(zoomsdk src/main.cpp
         src/util/SocketServer.cpp
 )
 
-
-target_include_directories(zoomsdk PRIVATE ${JWT_CPP_INCLUDE_DIRS})
-target_link_libraries(zoomsdk PRIVATE meetingsdk ada::ada CLI11::CLI11 PkgConfig::deps ${OpenCV_LIBS} ${X11_LIBRARIES})
+target_include_directories(zoomsdk PRIVATE ${JWT_CPP_INCLUDE_DIRS} ${PICOJSON_INCLUDE_DIRS})
+target_link_libraries(zoomsdk PRIVATE meetingsdk OpenSSL::SSL OpenSSL::Crypto CLI11::CLI11 PkgConfig::deps ${OpenCV_LIBS} ${X11_LIBRARIES})
 
 
 
