@@ -10,12 +10,11 @@
 #include <locale>
 #include <string>
 
-#include <ada.h>
-
 #include <CLI/CLI.hpp>
 
+#include "util/UrlParser.h"
+
 using namespace std;
-using namespace ada;
 
 class Config {
 
