@@ -1,4 +1,4 @@
-# Zoom Meeting SDK for Linux Headless Bot Sample
+# Zoom Meeting SDK for Linux Headless Sample
 
 This sample demonstrates how you can run the Zoom Meeting SDK for Linux within a Docker container and configure it for a
 variety of use cases through an intuitive CLI or through a configuration file.
@@ -25,7 +25,7 @@ git clone git@github.com:zoom/meetingsdk-headless-linux-sample.git
 Download the latest version of the Zoom SDK for Linux from the Zoom Marketplace and place it in
 the [lib/zoomsdk](lib/zoomsdk) folder of this repository.
 
-## 3. Configure the Bot
+## 3. Configure the App
 
 If you don't already have them, follow the section on how
 to [Get your Zoom Meeting SDK Credentials](#get-your-zoom-meeting-sdk-credentials).
@@ -39,15 +39,15 @@ cp sample.config.toml config.toml
 
 #### Fill out the config.toml
 
-Here, you can set any of the CLI options so that the bot has them available when it runs. Start by adding your Client ID and Client Secret in the relevant fields.
+Here, you can set any of the CLI options so that the app has them available when it runs. Start by adding your Client ID and Client Secret in the relevant fields.
 
 **At a minimum, you need to provide an Client ID and Client Secret along with information about the meeting you would like to join.**
 
 You can either provide a Join URL, or a Meeting ID and Password.
 
-## 4. Run the Bot
+## 4. Run the App
 
-Run the Docker container in order to build and run the bot
+Run the Docker container in order to build and run the app
 
 ```shell
 docker compose up
