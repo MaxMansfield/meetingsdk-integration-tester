@@ -1,93 +1,99 @@
-# Zoom Meeting SDK for Linux Headless Sample
+# Meeting SDK Integration Tester
 
-This sample demonstrates how you can run the Zoom Meeting SDK for Linux within a Docker container and configure it for a
-variety of use cases through an intuitive CLI or through a configuration file.
+A Meeting SDK-based bot for automated integration testing of Zoom SDKs.
+
+This project is a fork of [zoom/meetingsdk-headless-linux-sample](https://github.com/zoom/meetingsdk-headless-linux-sample), modified to serve as a test automation tool for validating other Zoom SDKs (RTMS SDK, Video SDK, etc.).
+
+## Purpose
+
+This bot can:
+- Join Zoom meetings programmatically
+- Inject known audio/video into meetings
+- Be controlled via HTTP API for test automation
+- Enable end-to-end testing of SDK data pipelines
 
 ## Prerequisites
 
-1. [Docker](https://www.docker.com/)
-1. [Zoom Account](https://support.zoom.us/hc/en-us/articles/207278726-Plan-Types-)
-1. [Zoom Meeting SDK Credentials](#config:-sdk-credentials) (Instructions below)
-    1. Client ID
-    1. Client Secret
-1. [AssemblyAI Key](https://www.assemblyai.com/)
-1. [Anthropic Key](https://www.anthropic.com/)
+1. [Docker](https://www.docker.com/) 20.0+
+2. [Zoom Account](https://support.zoom.us/hc/en-us/articles/207278726-Plan-Types-)
+3. [Zoom Meeting SDK Credentials](#get-your-zoom-meeting-sdk-credentials)
+   - Client ID
+   - Client Secret
 
-## 1. Clone the Repository
+## Quick Start
+
+### 1. Clone the Repository
 
 ```bash
-# Clone down this repository
-git clone git@github.com:zoom/meetingsdk-headless-linux-sample.git
+git clone git@github.com:MaxMansfield/meetingsdk-integration-tester.git
+cd meetingsdk-integration-tester
 ```
 
-## 2. Download the Zoom Linux SDK
+### 2. Download the Zoom Linux SDK
 
-Download the latest version of the Zoom SDK for Linux from the Zoom Marketplace and place it in
-the [lib/zoomsdk](lib/zoomsdk) folder of this repository.
+Download the latest version of the Zoom SDK for Linux from the [Zoom Marketplace](https://developers.zoom.us/docs/meeting-sdk/linux/) and place it in the `lib/zoomsdk/` folder.
 
-## 3. Configure the App
-
-If you don't already have them, follow the section on how
-to [Get your Zoom Meeting SDK Credentials](#get-your-zoom-meeting-sdk-credentials).
-
-
-#### Copy the sample config file
+### 3. Configure the App
 
 ```bash
 cp sample.config.toml config.toml
 ```
 
-#### Fill out the config.toml
+Edit `config.toml` with your Meeting SDK credentials and meeting information.
 
-Here, you can set any of the CLI options so that the app has them available when it runs. Start by adding your Client ID and Client Secret in the relevant fields.
+### 4. Build and Run
 
-**At a minimum, you need to provide an Client ID and Client Secret along with information about the meeting you would like to join.**
-
-You can either provide a Join URL, or a Meeting ID and Password.
-
-## 4. Run the App
-
-Run the Docker container in order to build and run the app
-
-```shell
+```bash
+docker compose build
 docker compose up
 ```
 
-That's it! You can use the --help argument in [entry.sh](bin/entry.sh) to see the available CLI and config.toml options.
-___
-### Get your Zoom Meeting SDK Credentials
+## HTTP API (Planned)
 
-In your web browser, navigate to [Zoom Developer Portal](https://developers.zoom.us/) and register/log into your
-developer account.
+The bot will expose an HTTP API for remote control:
 
-Click the "Build App" button at the top and choose to "Meeting SDK" application.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/join` | POST | Join a meeting |
+| `/leave` | POST | Leave current meeting |
+| `/status` | GET | Get bot status |
+| `/audio/play` | POST | Play audio file into meeting |
 
-1. Name your app
-2. Choose whether to list your app on the marketplace or not
-3. Click "Create"
-4. Fill out the prerequisite information
-5. Copy the Client ID and Client Secret to the config.toml file
+## Integration with RTMS SDK
 
-For more information, you can follow [this guide](https://developers.zoom.us/docs/meeting-sdk/developer-accounts/)
+This bot is designed to work with the [Zoom RTMS SDK](https://github.com/zoom/rtms) for integration testing:
 
-### Keeping secrets secret
+```
++------------------+          +------------------+
+|  This Bot        |   Zoom   |  RTMS SDK Test   |
+|  - Join meeting  |<-------->|  - Receive RTMS  |
+|  - Send audio    |  Cloud   |  - Validate data |
++------------------+          +------------------+
+```
 
-Remember, credentials should never be stored in a plaintext file for production use cases.
+## Development
 
-> :warning: **Never commit config.toml to version control:** The file likely contains Zoom SDK and Zoom OAuth
-> Credentials
+See [CLAUDE.md](CLAUDE.md) for detailed development instructions and roadmap.
 
-### Testing
+## Get Your Zoom Meeting SDK Credentials
 
-At this time there are no tests.
+1. Navigate to [Zoom Developer Portal](https://developers.zoom.us/)
+2. Click "Build App" and choose "Meeting SDK"
+3. Fill out the app information
+4. Copy the Client ID and Client Secret to your `config.toml`
 
-## Need help?
+For more information: [Meeting SDK Developer Guide](https://developers.zoom.us/docs/meeting-sdk/developer-accounts/)
 
-If you're looking for help, try [Developer Support](https://devsupport.zoom.us) or
-our [Developer Forum](https://devforum.zoom.us). Priority support is also available
-with [Premier Developer Support](https://zoom.us/docs/en-us/developer-support-plans.html) plans.
+## Security
 
-### Documentation
+> :warning: **Never commit config.toml to version control** - it contains sensitive credentials
 
-Make sure to review [our documentation](https://developers.zoom.us/docs/meeting-sdk/linux/) as a reference when building
-with the Zoom Meeting SDK for Linux.
+## License
+
+See [LICENSE.md](LICENSE.md)
+
+## Need Help?
+
+- [Developer Support](https://devsupport.zoom.us)
+- [Developer Forum](https://devforum.zoom.us)
+- [Meeting SDK Documentation](https://developers.zoom.us/docs/meeting-sdk/linux/)
